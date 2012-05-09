@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:avalara="http://www.mulesoft.org/schema/mule/avalara" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="EE-3.3.0"
-	xsi:schemaLocation="
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:avalara="http://www.mulesoft.org/schema/mule/avalara" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" version="EE-3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd 
 http://www.mulesoft.org/schema/mule/avalara http://www.mulesoft.org/schema/mule/avalara/2.0/mule-avalara.xsd 
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
-	<sfdc:config name="Salesforce" username="albin.kjellin@gmail.com"
-		password="1Mule4you" securityToken="L1eZIAOCizi9wXlE8TL11xKt"
-		doc:name="Salesforce" />
-	<avalara:config name="Avalara" doc:name="Avalara" />
-	<flow name="cluster-contactsFlow1" doc:name="cluster-contactsFlow1">
-		<http:inbound-endpoint exchange-pattern="request-response"
-			host="localhost" port="8881" path="trigger" doc:name="HTTP" />
-		<sfdc:query config-ref="Salesforce"
-			query="Select name, firstname, lastname,MailingStreet, MailingCity,MailingState, MailingCountry,MailingPostalCode  from contact"
-			doc:name="Salesforce" />
-		<collection-splitter doc:name="Collection Splitter" />
-		<logger message="#[groovy:payload.getClass()]" level="INFO"
-			doc:name="Logger" />
-		<logger message="#[payload:]" level="INFO" doc:name="Logger" />
-		<enricher>
-			<avalara:validate-address config-ref="Avalara"
-				account="1100068440" avalaraClient="doesnotmatter" license="0FB02FADB01DE0E5"
-				line1="#[groovy:payload['MailingStreet']]" city="#[groovy:payload['MailingCity']]"
-				country="#[groovy:payload['MailingCountry']]" postalCode="#[groovy:payload['MailingPostalCode']]"
-				taxRegionId="1" date="#[groovy:new Date()]" doc:name="Avalara" />
-			<enrich target="#[variable:validatedAddress]" source="#[payload:]" />
-		</enricher>
-		<logger message="Validated payload is = #[variable:validatedAddress]" level="ERROR"/>
-	</flow>
+    <sfdc:config name="Salesforce" username="albin.kjellin@gmail.com" password="1Mule4you" securityToken="L1eZIAOCizi9wXlE8TL11xKt" doc:name="Salesforce"/>
+    <avalara:config name="Avalara" doc:name="Avalara"/>
+    <smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail"/>
+    <flow name="cluster-contactsFlow1" doc:name="cluster-contactsFlow1">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8881" path="trigger" doc:name="HTTP"/>
+        <sfdc:query config-ref="Salesforce" query="Select name, firstname, lastname,MailingStreet, MailingCity,MailingState, MailingCountry,MailingPostalCode  from contact" doc:name="Salesforce"/>
+        <collection-splitter doc:name="Collection Splitter"/>
+        <logger message="#[groovy:payload.getClass()]" level="INFO" doc:name="Logger"/>
+        <logger message="#[payload:]" level="INFO" doc:name="Logger"/>
+        <enricher doc:name="Message Enricher">
+            <avalara:validate-address config-ref="Avalara" account="1100068440" avalaraClient="doesnotmatter" city="#[groovy:payload['MailingCity']]" country="#[groovy:payload['MailingCountry']]" license="0FB02FADB01DE0E5" line1="#[groovy:payload['MailingStreet']]" postalCode="#[groovy:payload['MailingPostalCode']]" taxRegionId="1" date="#[groovy:new Date()]" doc:name="Avalara"/>
+            <enrich source="#[payload:]" target="#[variable:validatedAddress]"/>
+        </enricher>
+        <logger message="Validated payload is = #[variable:validatedAddress]" level="ERROR" doc:name="Logger"/>
+        
+        <choice>
+            <when evaluator="groovy"
+                  expression="message.getInvocationProperty('validatedAddress').resultCode.value =='Success'">
+                <logger message="Address was validated" level="ERROR"/>
+            </when>
+            <otherwise>
+                <logger message="Unable to validate Address" level="ERROR"/>
+                <!-- 
+                <async>
+                    <expression-transformer evaluator="groovy" expression="'There was a problem with customer '+message.getInvocationProperty('tag')+' address: '+message.getInvocationProperty('custAccount')+'\n'+payload.messages.getMessage().first().summary+'\n'+payload.messages.getMessage().first().details"/>
+                    <smtp:outbound-endpoint host="smtp.gmail.com"
+                                            port="587" user="muleexception" password="mule2demo"
+                                            from="muleexception"
+                                            to="albin.kjellin@mulesoft.com" subject="Invalid Customer Address"
+                                            connector-ref="Gmail"/>
+                </async>
+                 -->
+            </otherwise>
+        </choice>
+    </flow>
 </mule>
