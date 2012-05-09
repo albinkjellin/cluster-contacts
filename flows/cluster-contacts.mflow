@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="cluster-contacts">
-    <global-element type="http://www.mulesoft.org/schema/mule/sfdc/config" name="Salesforce" entity-id="85815ff1-c16b-439e-8d5a-779e28d6e054">
+    <global-element type="http://www.mulesoft.org/schema/mule/sfdc/config" name="Salesforce" entity-id="f60f5ae3-9a43-44c6-b182-84f4b4e81ae2">
         <properties>
             <property value="Salesforce" name="name"/>
             <property value="albin.kjellin@gmail.com" name="username"/>
@@ -14,12 +14,12 @@
             <property name="objectStore-ref"/>
         </properties>
     </global-element>
-    <global-element type="http://www.mulesoft.org/schema/mule/avalara/config" name="Avalara" entity-id="9fd070fd-dc2f-4d92-bd28-7315fad5be49">
+    <global-element type="http://www.mulesoft.org/schema/mule/avalara/config" name="Avalara" entity-id="3b1e5d14-a600-4e0a-94f0-fe985aeee9ab">
         <properties>
             <property value="Avalara" name="name"/>
         </properties>
     </global-element>
-    <global-element type="http://www.mulesoft.org/schema/mule/smtp/gmail-connector" name="Gmail" entity-id="27c640a4-0e16-4c14-8a66-cd61decdd922">
+    <global-element type="http://www.mulesoft.org/schema/mule/smtp/gmail-connector" name="Gmail" entity-id="c7f9353e-8f39-4c85-8a88-30b9482515c1">
         <properties>
             <property value="Gmail" name="name"/>
             <property name="bccAddresses"/>
@@ -33,6 +33,12 @@
             <property value="true" name="validateConnections"/>
         </properties>
     </global-element>
+    <global-element type="http://www.mulesoft.org/schema/mule/ee/data-mapper/config" name="CreateSalesForceContact" entity-id="b486ae00-9306-4842-9e70-437900a65294">
+        <properties>
+            <property value="CreateSalesForceContact" name="name"/>
+            <property value="createsalesforcecontact.grf" name="transformationGraphPath"/>
+        </properties>
+    </global-element>
     <flow SubFlow="false" name="cluster-contactsFlow1">
         <properties>
             <property name="processingStrategy2"/>
@@ -42,8 +48,8 @@
             <property name="USE_TRANSACTION_ID"/>
             <property name="tracking:transaction-id"/>
         </properties>
-        <lane entity-id="acf88cb9-a60a-4e50-abd2-1a05a474abfe">
-            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="ebd15461-e146-4247-905d-3cb734cb0f5d">
+        <lane entity-id="fffd8c10-2988-40ee-a2c6-431a74299b0c">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="6e1ea7a3-5cc9-4d62-8fd3-a02091c6384e">
                 <properties>
                     <property value="one-way" name="exchange-pattern"/>
                     <property value="request-response" name="exchange-pattern"/>
@@ -71,49 +77,109 @@
                     <property name="keep-alive"/>
                 </properties>
             </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" name="Salesforce" entity-id="274dd775-f557-4ab8-92fd-b175ce4163ee">
+            <pattern type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" name="Salesforce" entity-id="96924b86-9833-497e-97b3-bbe97424cec2">
                 <properties>
                     <property value="Salesforce" name="config-ref"/>
                     <property value="http://www.mulesoft.org/schema/mule/sfdc/query" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
                     <property value="Salesforce" name="config-ref"/>
-                    <property value="Select name, firstname, lastname,MailingStreet, MailingCity,MailingState, MailingCountry,MailingPostalCode  from contact" name="query"/>
+                    <property value="Select id, name, firstname, lastname,MailingStreet, MailingCity,MailingState, MailingCountry,MailingPostalCode  from contact" name="query"/>
                     <property name=""/>
                     <property name="username"/>
                     <property name="password"/>
                     <property name="securityToken"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/collection-splitter" name="Collection Splitter" entity-id="cb93c79b-d1d7-407e-a91d-261295c01dab">
+            <scope type="http://www.mulesoft.org/schema/mule/core/foreach" name="Foreach" entity-id="5004c6f1-b6ab-4e9a-af55-bad723247121">
                 <properties>
-                    <property name="enableCorrelation"/>
+                    <property name="collection"/>
+                    <property name="counterVariableName"/>
+                    <property value="5" name="batchSize"/>
+                    <property name="rootMessageVariableName"/>
                 </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="0bf7b900-2a66-4445-bcdc-61a0bbb1c13d">
+                <compartment entity-id="32254703-ad02-4c8e-9f60-c9ef20e622d2">
+                    <lane entity-id="f7977ac6-6952-4557-bea0-fc4d4a5a9153">
+                        <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="374d6142-bfaa-42f4-9272-eb513800be08">
+                            <properties>
+<property value="one-way" name="exchange-pattern"/>
+<property value="one-way" name="exchange-pattern"/>
+<property value="batch" name="path"/>
+<property name="businessEventsLabel"/>
+<property name="tracking:enable-default-events"/>
+<property name="address"/>
+<property name="responseTimeout"/>
+<property name="encoding"/>
+<property name="disableTransportTransformer"/>
+<property name="mimeType"/>
+<property name="connector-ref"/>
+<property name="ref"/>
+<property name="transformer-refs"/>
+<property name="responseTransformer-refs"/>
+                            </properties>
+                        </endpoint>
+                    </lane>
+                </compartment>
+            </scope>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="cluster-contactsFlow2">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property name="USE_TRANSACTION_ID"/>
+            <property name="tracking:transaction-id"/>
+        </properties>
+        <lane entity-id="0d7dd90f-2368-418d-aacf-3f0cc297ca25">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="5f7d3cf2-1997-4e38-b9eb-2c03f2198ceb">
                 <properties>
-                    <property value="#[groovy:payload.getClass()]" name="message"/>
-                    <property value="INFO" name="level"/>
-                    <property name="category"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="batch" name="path"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="connector-ref"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
                 </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="2eb6099f-854d-4666-8a04-7192896b5b41">
+            </endpoint>
+            <scope type="http://www.mulesoft.org/schema/mule/core/foreach" name="Foreach" entity-id="99b8eff6-caa2-48a2-9670-3bccd3e70085">
                 <properties>
-                    <property value="#[payload:]" name="message"/>
-                    <property value="INFO" name="level"/>
-                    <property name="category"/>
+                    <property name="collection"/>
+                    <property name="counterVariableName"/>
+                    <property name="batchSize"/>
+                    <property name="rootMessageVariableName"/>
                 </properties>
-            </pattern>
-            <scope type="org.mule.tooling.ui.modules.core.scope.enricher" name="Message Enricher" entity-id="179f10cf-c986-4d24-98da-a440a482a202">
-                <properties>
-                    <property name="source"/>
-                    <property name="target"/>
-                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/enrich;0">
-                        <property value="#[payload:]" name="source"/>
-                        <property value="#[variable:validatedAddress]" name="target"/>
-                    </property-collection>
-                </properties>
-                <compartment entity-id="08ef084c-0617-426a-94fb-259f7727f65a">
-                    <lane entity-id="99df78ed-c756-4288-9917-88cb4b485b3f">
-                        <pattern type="http://www.mulesoft.org/schema/mule/avalara/avalara-connector" name="Avalara" entity-id="5022e92b-b54f-4caf-bde6-0fba0081cefb">
+                <compartment entity-id="b5a01700-4756-45a5-b0c7-26e08daa723d">
+                    <lane entity-id="b0086f43-2b05-47b3-83ed-2cbf08dedfab">
+                        <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="c6d34306-bd41-406a-a941-28e6ffe47e3b">
+                            <properties>
+<property value="For Each Payload = #[groovy:payload.Id]" name="message"/>
+<property value="ERROR" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="Message Properties" entity-id="0a416f67-48b5-4c5e-8023-1dc70322d229">
+                            <properties>
+<property name="returnClass"/>
+<property name="ignoreBadInput"/>
+<property name="encoding"/>
+<property name="mimeType"/>
+<property name="overwrite"/>
+<property name="scope"/>
+<property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;0">
+    <property value="#[groovy:payload.Id]" name="value"/>
+    <property value="sfid" name="key"/>
+</property-collection>
+                            </properties>
+                        </pattern>
+                        <pattern type="http://www.mulesoft.org/schema/mule/avalara/avalara-connector" name="Avalara" entity-id="34a53dc4-f601-4561-8dd3-b9527a594e9b">
                             <properties>
 <property value="Avalara" name="config-ref"/>
 <property value="http://www.mulesoft.org/schema/mule/avalara/validate-address" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
@@ -138,48 +204,100 @@
 <property name="taxability"/>
                             </properties>
                         </pattern>
+                        <splitter type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="f1b3469d-6c0f-4d3a-8bc2-4142fac1f3cb">
+                            <properties>
+<property-collection name="edb2f317-57ec-480e-8ba1-d89803a18ac6">
+    <property value="true" name="choice.otherwise"/>
+</property-collection>
+<property-collection name="d002d2ec-95e1-44ca-adbb-71fd84707709">
+    <property value="payload.resultCode.value =='Success'" name="choice.expression"/>
+    <property value="groovy" name="choice.evaluator"/>
+</property-collection>
+                            </properties>
+                            <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="4b95f79e-8dd9-4f92-be9f-a20324184058"/>
+                            <compartment entity-id="c06bbb4e-948e-44f4-a97c-394fea1fb6cc">
+<lane entity-id="d002d2ec-95e1-44ca-adbb-71fd84707709">
+    <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="d8353363-fc25-45e3-ab90-fb3f58e92db6">
+        <properties>
+            <property value="For Each Payload = #[payload:]" name="message"/>
+            <property value="ERROR" name="level"/>
+            <property name="category"/>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="3cd572aa-c86d-41fe-822e-fdefba9e7c51">
+        <properties>
+            <property value="sfid = #[groovy:message.getInvocationProperty('sfid')]" name="message"/>
+            <property value="ERROR" name="level"/>
+            <property name="category"/>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/ee/data-mapper/data-mapper-connector" name="Data-mapper" entity-id="3c7816ab-8c0c-4bfd-8cc5-3a2baf7c440c">
+        <properties>
+            <property value="CreateSalesForceContact" name="config-ref"/>
+            <property value="http://www.mulesoft.org/schema/mule/ee/data-mapper/transform" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+            <property value="CreateSalesForceContact" name="config-ref"/>
+            <property name="input-ref"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/ee/data-mapper/input-arguments;0">
+                <property-collection name="@http://www.mulesoft.org/schema/mule/ee/data-mapper/input-argument;1">
+                    <property value="#[variable:sfid]" name="value"/>
+                    <property value="sfid" name="key"/>
+                </property-collection>
+            </property-collection>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="1a91551d-d34d-4122-b040-a8a678578541">
+        <properties>
+            <property value="AFTER MAPPING: #[payload:]" name="message"/>
+            <property value="INFO" name="level"/>
+            <property name="category"/>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" name="Salesforce" entity-id="ff4750bf-2ee5-4c8a-9135-ff2a454be8fe">
+        <properties>
+            <property value="Salesforce" name="config-ref"/>
+            <property value="http://www.mulesoft.org/schema/mule/sfdc/update" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+            <property value="Salesforce" name="config-ref"/>
+            <property value="Contact" name="type"/>
+            <property name=""/>
+            <property name="username"/>
+            <property name="password"/>
+            <property name="securityToken"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/update-objects;0">
+                <property value="#[payload]" name="ref"/>
+            </property-collection>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/core/object-to-string-transformer" name="Object to String" entity-id="a0dcfecb-a752-47d3-a31e-017c85272d4c">
+        <properties>
+            <property name="returnClass"/>
+            <property name="ignoreBadInput"/>
+            <property name="encoding"/>
+            <property name="mimeType"/>
+        </properties>
+    </pattern>
+    <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="d3450222-b969-48c2-8d77-c30ee9f22e2d">
+        <properties>
+            <property value="#[payload:]" name="message"/>
+            <property value="INFO" name="level"/>
+            <property name="category"/>
+        </properties>
+    </pattern>
+</lane>
+<lane entity-id="edb2f317-57ec-480e-8ba1-d89803a18ac6">
+    <pattern type="http://www.mulesoft.org/schema/mule/core/object-to-string-transformer" name="Object to String" entity-id="980bbeb5-8d57-4429-be23-e6d46af33d24">
+        <properties>
+            <property name="returnClass"/>
+            <property name="ignoreBadInput"/>
+            <property name="encoding"/>
+            <property name="mimeType"/>
+        </properties>
+    </pattern>
+</lane>
+                            </compartment>
+                        </splitter>
                     </lane>
                 </compartment>
             </scope>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="b68926fa-dabb-48a4-bde2-0c3c519a0d52">
-                <properties>
-                    <property value="Validated payload is = #[variable:validatedAddress]" name="message"/>
-                    <property value="ERROR" name="level"/>
-                    <property name="category"/>
-                </properties>
-            </pattern>
-            <splitter type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="7bb2801d-583e-424f-ba78-c86b75ee2631">
-                <properties>
-                    <property-collection name="b44a972a-5bf8-41df-8270-59ffe444be59">
-                        <property value="true" name="choice.otherwise"/>
-                    </property-collection>
-                    <property-collection name="043a31c7-be50-4679-9a16-03845770493d">
-                        <property value="message.getInvocationProperty('validatedAddress').resultCode.value =='Success'" name="choice.expression"/>
-                        <property value="groovy" name="choice.evaluator"/>
-                    </property-collection>
-                </properties>
-                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="4245eac5-ce57-4cc9-88e8-31cd117e597a"/>
-                <compartment entity-id="48c96a05-e2cb-419b-a8fb-14338f28f2a0">
-                    <lane entity-id="043a31c7-be50-4679-9a16-03845770493d">
-                        <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="752c89b2-7a08-4873-9cb2-154765a0d70e">
-                            <properties>
-<property value="Address was validated" name="message"/>
-<property value="ERROR" name="level"/>
-<property name="category"/>
-                            </properties>
-                        </pattern>
-                    </lane>
-                    <lane entity-id="b44a972a-5bf8-41df-8270-59ffe444be59">
-                        <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="98c36f28-e205-44e3-a1a3-fe4479691d5c">
-                            <properties>
-<property value="Unable to validate Address" name="message"/>
-<property value="ERROR" name="level"/>
-<property name="category"/>
-                            </properties>
-                        </pattern>
-                    </lane>
-                </compartment>
-            </splitter>
         </lane>
     </flow>
     <description></description>
