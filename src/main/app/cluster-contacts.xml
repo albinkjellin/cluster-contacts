@@ -39,12 +39,12 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 		<vm:inbound-endpoint exchange-pattern="one-way"
 			path="batch" doc:name="VM" />
 		<foreach doc:name="Foreach">
-			<logger message="For Each Payload = #[groovy:payload.Id]" level="ERROR" />
+			
 			<message-properties-transformer
-				doc:name="Message Properties">
-				<add-message-property key="sfid"
-					value="#[groovy:payload.Id]" />
+				doc:name="Message Properties" scope="invocation">
+				<add-message-property key="sfid" value="#[groovy:payload.Id]" />
 			</message-properties-transformer>
+			
 			<avalara:validate-address config-ref="Avalara"
 				account="1100068440" avalaraClient="doesnotmatter"
 				city="#[groovy:payload['MailingCity']]" country="#[groovy:payload['MailingCountry']]"
@@ -56,7 +56,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 					evaluator="groovy">
 					<processor-chain>
 					<logger message="For Each Payload = #[payload:]" level="ERROR" />
-						<logger message="sfid = #[groovy:message.getInvocationProperty('sfid')]" level="ERROR" />
+						<logger message="sfid = #[groovy:message.getInvocationProperty('sfid').getClass()]" level="ERROR" />
 						<data-mapper:transform config-ref="CreateSalesForceContact"
 							doc:name="Data-mapper">
 							<data-mapper:input-arguments>
