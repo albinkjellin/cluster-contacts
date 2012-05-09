@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:avalara="http://www.mulesoft.org/schema/mule/avalara" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="EE-3.3.0"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/avalara http://www.mulesoft.org/schema/mule/avalara/2.0/mule-avalara.xsd 
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+	<sfdc:config name="Salesforce" username="albin.kjellin@gmail.com"
+		password="1Mule4you" securityToken="L1eZIAOCizi9wXlE8TL11xKt"
+		doc:name="Salesforce" />
+	<avalara:config name="Avalara" doc:name="Avalara" />
+	<flow name="cluster-contactsFlow1" doc:name="cluster-contactsFlow1">
+		<http:inbound-endpoint exchange-pattern="request-response"
+			host="localhost" port="8881" path="trigger" doc:name="HTTP" />
+		<sfdc:query config-ref="Salesforce"
+			query="Select name, firstname, lastname,MailingStreet, MailingCity,MailingState, MailingCountry,MailingPostalCode  from contact"
+			doc:name="Salesforce" />
+		<collection-splitter doc:name="Collection Splitter" />
+		<logger message="#[groovy:payload.getClass()]" level="INFO"
+			doc:name="Logger" />
+		<logger message="#[payload:]" level="INFO" doc:name="Logger" />
+		<enricher>
+			<avalara:validate-address config-ref="Avalara"
+				account="1100068440" avalaraClient="doesnotmatter" license="0FB02FADB01DE0E5"
+				line1="#[groovy:payload['MailingStreet']]" city="#[groovy:payload['MailingCity']]"
+				country="#[groovy:payload['MailingCountry']]" postalCode="#[groovy:payload['MailingPostalCode']]"
+				taxRegionId="1" date="#[groovy:new Date()]" doc:name="Avalara" />
+			<enrich target="#[variable:validatedAddress]" source="#[payload:]" />
+		</enricher>
+		<logger message="Validated payload is = #[variable:validatedAddress]" level="ERROR"/>
+	</flow>
+</mule>
