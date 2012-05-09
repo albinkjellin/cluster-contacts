@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="albinkjellin" created="Wed May 09 11:22:46 PDT 2012" guiVersion="3.3.0.M2" id="1336595835078" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed May 09 11:22:46 PDT 2012" modifiedBy="albinkjellin" name="CreateSalesForceContact" preview-file="/Users/albinkjellin/studio/hack/cluster-contacts/src/test/java/CreateTestValidateResult.groovy" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __sourcePath="{}/object/messages/message" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="Metadata0" _parent_id="__parent_id" _type="Input" id="Metadata1">
+<Record fieldDelimiter="|" name="Message" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __sourcePath="{}/object/messages/message/details" label="details" name="details" type="string"/>
+<Field __sourcePath="{}/object/messages/message/helpLink" label="helpLink" name="helpLink" type="string"/>
+<Field __sourcePath="{}/object/messages/message/name" label="name" name="name" type="string"/>
+<Field __sourcePath="{}/object/messages/message/refersTo" label="refersTo" name="refersTo" type="string"/>
+<Field __sourcePath="{}/object/messages/message/severity" label="severity" name="severity" type="string"/>
+<Field __sourcePath="{}/object/messages/message/source" label="source" name="source" type="string"/>
+<Field __sourcePath="{}/object/messages/message/summary" label="summary" name="summary" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{}/outputMetadata" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="20092732-146a-4171-af1f-d284a344ad65">
+<Record fieldDelimiter="|" label="outputMetadata" name="outputMetadata" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/MailingCity" name="MailingCity" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/MailingCountry" name="MailingCountry" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/MailingState" name="MailingState" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/MailingPostalCode" name="MailingPostalCode" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/MailingStreet" name="MailingStreet" type="string"/>
+<Field __sourcePath="{=}/outputMetadata/Id" containerType="" name="Id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{}/object/validAddresses/validAddress" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="Metadata0" _parent_id="__parent_id" _type="Input" id="Metadata2">
+<Record fieldDelimiter="|" name="ValidAddress" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/addressCode" label="addressCode" name="addressCode" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/addressType" label="addressType" name="addressType" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/carrierRoute" label="carrierRoute" name="carrierRoute" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/city" label="city" name="city" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/country" label="country" name="country" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/county" label="county" name="county" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/fipsCode" label="fipsCode" name="fipsCode" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/geocodeType" label="geocodeType" name="geocodeType" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/latitude" label="latitude" name="latitude" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/line1" label="line1" name="line1" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/line2" label="line2" name="line2" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/line3" label="line3" name="line3" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/line4" label="line4" name="line4" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/longitude" label="longitude" name="longitude" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/postNet" label="postNet" name="postNet" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/postalCode" label="postalCode" name="postalCode" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/region" label="region" name="region" type="string"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/taxRegionId" label="taxRegionId" name="taxRegionId" type="integer"/>
+<Field __sourcePath="{}/object/validAddresses/validAddress/validateStatus" label="validateStatus" name="validateStatus" type="string"/>
+</Record>
+</Metadata>
+<Metadata __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="Metadata0">
+<Record fieldDelimiter="|" name="ValidateResult" recordDelimiter="&#10;" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __sourcePath="{}/object/resultCode" label="resultCode" name="resultCode" type="string"/>
+<Field __sourcePath="{}/object/taxable" label="taxable" name="taxable" type="boolean"/>
+<Field __sourcePath="{}/object/transactionId" label="transactionId" name="transactionId" type="string"/>
+<Field __artificialType="XPATH" __xpath="{=}/object/resultCode" label="Rule1" name="Rule11" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+<Entry id="DictionaryEntry2" input="true" name="sfid" output="false" type="string"/>
+<Entry id="DictionaryEntry3" input="true" name="sfid" output="false" type="string"/>
+<Entry id="DictionaryEntry4" input="true" name="sfid" output="false" type="string"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiHeight="0" guiName="JAVA Reader" guiWidth="0" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath="./validAddresses/validAddress">
+  <Mapping cloverField="addressCode" trim="true" xpath="addressCode"/>
+  <Mapping cloverField="addressType" trim="true" xpath="addressType"/>
+  <Mapping cloverField="carrierRoute" trim="true" xpath="carrierRoute"/>
+  <Mapping cloverField="city" trim="true" xpath="city"/>
+  <Mapping cloverField="country" trim="true" xpath="country"/>
+  <Mapping cloverField="county" trim="true" xpath="county"/>
+  <Mapping cloverField="fipsCode" trim="true" xpath="fipsCode"/>
+  <Mapping cloverField="geocodeType" trim="true" xpath="geocodeType"/>
+  <Mapping cloverField="latitude" trim="true" xpath="latitude"/>
+  <Mapping cloverField="line1" trim="true" xpath="line1"/>
+  <Mapping cloverField="line2" trim="true" xpath="line2"/>
+  <Mapping cloverField="line3" trim="true" xpath="line3"/>
+  <Mapping cloverField="line4" trim="true" xpath="line4"/>
+  <Mapping cloverField="longitude" trim="true" xpath="longitude"/>
+  <Mapping cloverField="postNet" trim="true" xpath="postNet"/>
+  <Mapping cloverField="postalCode" trim="true" xpath="postalCode"/>
+  <Mapping cloverField="region" trim="true" xpath="region"/>
+  <Mapping cloverField="taxRegionId" trim="true" xpath="taxRegionId"/>
+  <Mapping cloverField="validateStatus" trim="true" xpath="validateStatus"/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<schema-object>
+  <typed-object-ref type-ref="com.avalara.avatax.services.ValidateResult"/>
+  <typed-object type="com.avalara.avatax.services.ArrayOfValidAddress">
+    <schema-collection name="validAddress" type="java.util.List">
+      <typed-object-ref type-ref="com.avalara.avatax.services.ValidAddress"/>
+    </schema-collection>
+  </typed-object>
+  <typed-object type="com.avalara.avatax.services.ValidateResult">
+    <typed-object-ref name="messages" type-ref="com.avalara.avatax.services.ArrayOfMessage"/>
+    <typed-object-ref name="resultCode" type-ref="com.avalara.avatax.services.SeverityLevel"/>
+    <typed-object-ref name="taxable" type-ref="boolean"/>
+    <typed-object-ref name="transactionId" type-ref="java.lang.String"/>
+    <typed-object-ref name="validAddresses" type-ref="com.avalara.avatax.services.ArrayOfValidAddress"/>
+  </typed-object>
+  <typed-object type="int"/>
+  <typed-object type="com.avalara.avatax.services.ArrayOfMessage">
+    <schema-collection name="message" type="java.util.List">
+      <typed-object-ref type-ref="com.avalara.avatax.services.Message"/>
+    </schema-collection>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="boolean"/>
+  <typed-object type="com.avalara.avatax.services.Message">
+    <typed-object-ref name="details" type-ref="java.lang.String"/>
+    <typed-object-ref name="helpLink" type-ref="java.lang.String"/>
+    <typed-object-ref name="name" type-ref="java.lang.String"/>
+    <typed-object-ref name="refersTo" type-ref="java.lang.String"/>
+    <typed-object-ref name="severity" type-ref="com.avalara.avatax.services.SeverityLevel"/>
+    <typed-object-ref name="source" type-ref="java.lang.String"/>
+    <typed-object-ref name="summary" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.avalara.avatax.services.SeverityLevel"/>
+  <typed-object type="com.avalara.avatax.services.ValidAddress">
+    <typed-object-ref name="addressCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="addressType" type-ref="java.lang.String"/>
+    <typed-object-ref name="carrierRoute" type-ref="java.lang.String"/>
+    <typed-object-ref name="city" type-ref="java.lang.String"/>
+    <typed-object-ref name="country" type-ref="java.lang.String"/>
+    <typed-object-ref name="county" type-ref="java.lang.String"/>
+    <typed-object-ref name="fipsCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="geocodeType" type-ref="java.lang.String"/>
+    <typed-object-ref name="latitude" type-ref="java.lang.String"/>
+    <typed-object-ref name="line1" type-ref="java.lang.String"/>
+    <typed-object-ref name="line2" type-ref="java.lang.String"/>
+    <typed-object-ref name="line3" type-ref="java.lang.String"/>
+    <typed-object-ref name="line4" type-ref="java.lang.String"/>
+    <typed-object-ref name="longitude" type-ref="java.lang.String"/>
+    <typed-object-ref name="postNet" type-ref="java.lang.String"/>
+    <typed-object-ref name="postalCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="region" type-ref="java.lang.String"/>
+    <typed-object-ref name="taxRegionId" type-ref="int"/>
+    <typed-object-ref name="validateStatus" type-ref="java.lang.String"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" fileURL="dict:outputPayload" guiHeight="0" guiName="MAP Writer" guiWidth="0" guiX="460" guiY="20" id="MAP_WRITER0" type="MAP_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:collection clover:name="outputMetadata" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <item clover:inPort="0">
+    <MailingCity>$0.MailingCity</MailingCity>
+    <MailingCountry>$0.MailingCountry</MailingCountry>
+    <MailingState>$0.MailingState</MailingState>
+    <MailingPostalCode>$0.MailingPostalCode</MailingPostalCode>
+    <MailingStreet>$0.MailingStreet</MailingStreet>
+    <Id>$0.Id</Id>
+  </item>
+</clover:collection>]]></attr>
+<attr name="_data_format"><![CDATA[MAP]]></attr>
+</Node>
+<Node enabled="enabled" guiHeight="0" guiName="validAddress_to_outputMetadata" guiWidth="0" guiX="240" guiY="20" id="REFORMAT0" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Id = dictionary.sfid;
+	$out.0.MailingStreet = $in.0.line1;
+	$out.0.MailingState = $in.0.region;
+	$out.0.MailingPostalCode = $in.0.postalCode;
+	$out.0.MailingCountry = $in.0.country;
+	$out.0.MailingCity = $in.0.city;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Edge fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="REFORMAT0:0"/>
+<Edge fromNode="REFORMAT0:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="20092732-146a-4171-af1f-d284a344ad65" outPort="Port 0 (out)" toNode="MAP_WRITER0:0"/>
+</Phase>
+</Graph>
