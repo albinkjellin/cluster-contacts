@@ -16,8 +16,8 @@ http://www.mulesoft.org/schema/mule/avalara http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
-	<sfdc:config name="Salesforce" username="albin.kjellin@gmail.com"
-		password="1Mule4you" securityToken="L1eZIAOCizi9wXlE8TL11xKt"
+	<sfdc:config name="Salesforce" username="manharskagg@gmail.com"
+		password="mule2demo" securityToken="egAtRb2i0PHjFwcfmw0hNEEoW"
 		doc:name="Salesforce" />
 	<avalara:config name="Avalara" doc:name="Avalara" />
 	<smtp:gmail-connector name="Gmail"
@@ -39,12 +39,13 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 		<vm:inbound-endpoint exchange-pattern="one-way"
 			path="batch" doc:name="VM" />
 		<foreach doc:name="Foreach">
-			
+
 			<message-properties-transformer
 				doc:name="Message Properties" scope="invocation">
-				<add-message-property key="sfid" value="#[groovy:payload.Id]" />
+				<add-message-property key="sfid"
+					value="#[groovy:payload.Id.trim()]" />
 			</message-properties-transformer>
-			
+
 			<avalara:validate-address config-ref="Avalara"
 				account="1100068440" avalaraClient="doesnotmatter"
 				city="#[groovy:payload['MailingCity']]" country="#[groovy:payload['MailingCountry']]"
@@ -55,13 +56,14 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 				<when expression="payload.resultCode.value =='Success'"
 					evaluator="groovy">
 					<processor-chain>
-					<logger message="For Each Payload = #[payload:]" level="ERROR" />
-						<logger message="sfid = #[groovy:message.getInvocationProperty('sfid').getClass()]" level="ERROR" />
+						<logger message="For Each Payload = #[payload:]" level="ERROR" />
+						<logger
+							message="sfid = #[groovy:message.getInvocationProperty('sfid').getClass()]"
+							level="ERROR" />
 						<data-mapper:transform config-ref="CreateSalesForceContact"
 							doc:name="Data-mapper">
 							<data-mapper:input-arguments>
-								<data-mapper:input-argument key="sfid">#[variable:sfid]
-								</data-mapper:input-argument>
+								<data-mapper:input-argument key="sfid">#[variable:sfid]</data-mapper:input-argument>
 							</data-mapper:input-arguments>
 						</data-mapper:transform>
 						<logger message="AFTER MAPPING: #[payload:]" level="INFO"
